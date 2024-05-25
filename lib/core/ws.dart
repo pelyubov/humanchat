@@ -1,14 +1,18 @@
 import 'package:humanchat/core/api.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-class UWebSocket {
-  static final _instance = UWebSocket._();
+class WS {
+  static final _instance = WS._();
   static final _websocketUrl = Uri.parse(APIEndpoint.websocketPath);
-  static final _channel = WebSocketChannel.connect(_websocketUrl);
+  static final channel = WebSocketChannel.connect(_websocketUrl);
 
-  UWebSocket._();
+  WS._();
 
-  factory UWebSocket() {
+  factory WS() {
     return _instance;
+  }
+
+  Future<void> ready() async {
+    await channel.ready;
   }
 }

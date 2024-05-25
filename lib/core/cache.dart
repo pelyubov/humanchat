@@ -26,6 +26,19 @@ class Cache {
     users = await Hive.openBox<User>('users');
     channels = await Hive.openBox<Channel>('channels');
     messages = await Hive.openBox<Message>('messages');
+    await Hive.openBox('auth');
+  }
+
+  Future<void> cacheToken(String token) async {
+    return await Hive.box('auth').put('token', token);
+  }
+
+  Future<String?> getToken() async {
+    return await Hive.box('auth').get('token');
+  }
+
+  Future<void> deleteToken() async {
+    return await Hive.box('auth').delete('token');
   }
 
   Future<void> close() async {
