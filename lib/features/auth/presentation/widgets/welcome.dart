@@ -9,7 +9,10 @@ class Welcome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       heightFactor: 2,
-      child: Text(Languages.hello, style: Get.textTheme.displayMedium),
+      child: Text(
+        Languages.hello,
+        style: Get.textTheme.displayMedium,
+      ),
     );
   }
 }

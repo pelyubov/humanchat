@@ -1,3 +1,3 @@
 bool isPassword({required String password}) {
-  return password.length >= 6;
+  return RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{8,}$').hasMatch(password);
 }

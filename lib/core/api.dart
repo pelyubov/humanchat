@@ -1,4 +1,5 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:humanchat/utils/types.dart';
 
 class APIEndpoint {
   static final String serverPath = dotenv.get('URL');
@@ -20,11 +21,19 @@ class UserEndpoint {
   static final String updateUser = _user;
   static final String deleteUser = _user;
   static final String getSelfInfo = _user;
+
   static final String sendRequest = '$_user/requests/new';
-  static String deleteRelation({required String id}) => '$_user/request/$id/reject';
   static String acceptRequest({required String id}) => '$_user/request/$id/accept';
+
+  static String deleteRelation({required String id}) => '$_user/request/$id/reject';
   static String getFriendsRequests = '$_user/requests/outgoing';
   static String getIncomingRequests = '$_user/requests/incoming';
+}
+
+class ChatEndpoint {
+  static String sendMessage({required ChannelId channelId}) =>
+      '${APIEndpoint.serverPath}/api/channels/$channelId/messages';
+  // static String channel({required ChannelId channelId}) =>
 }
 
 // class ChannelEndpoint {

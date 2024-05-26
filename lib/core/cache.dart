@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:humanchat/entities/channel.entity.dart';
 import 'package:humanchat/entities/message.entity.dart';
@@ -11,14 +13,14 @@ class Cache {
   }
 
   Cache._internal();
-
   late final Box<User> users;
   late final Box<Channel> channels;
   late final Box<Message> messages;
 
   Future<void> init() async {
+    log('Cache initialized');
+    await Hive.initFlutter();
     Hive
-      ..initFlutter()
       ..registerAdapter(UserAdapter())
       ..registerAdapter(ChannelAdapter())
       ..registerAdapter(MessageAdapter());
