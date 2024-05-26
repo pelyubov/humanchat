@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:humanchat/features/chat/presentation/bloc/chat.bloc.dart';
 import 'package:humanchat/features/chat/presentation/widgets/InputChatBar.dart';
+import 'package:humanchat/features/chat/presentation/widgets/MessageItem.dart';
+import 'package:humanchat/utils/snowflake.dart';
 
-class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+class ChatPage extends StatelessWidget {
+  final chatBloc = Get.put(ChatBloc());
 
-  @override
-  State<ChatPage> createState() => _ChatPageState();
-}
-
-class _ChatPageState extends State<ChatPage> {
-  var mediaOpen = true;
+  ChatPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,11 +40,22 @@ class _ChatPageState extends State<ChatPage> {
         ],
         title: const Text('Chat Page'),
       ),
-      body: const Column(
+      body: Column(
         children: [
-          Text('messages'),
-          Expanded(child: SizedBox()),
-          ChatInputBar(),
+          Obx(() => Expanded(
+                  child: ListView(
+                children: chatBloc
+                    .getMessage(currentChannelId: chatBloc.currentChannelId.value!)
+                    .map((e) => MessageItem(
+                          message: e.content,
+                          createAt: Snowflake.timestamp(e.messageId),
+                          messageState: MessageState.seen,
+                          username: e.author.toString(),
+                          messagePosition: MessagePosition.left, // TODO get accountId
+                        ))
+                    .toList(),
+              ))),
+          const ChatInputBar(),
         ],
       ),
     );

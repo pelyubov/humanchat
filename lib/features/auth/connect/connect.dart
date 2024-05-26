@@ -12,7 +12,7 @@ class AuthConnect extends GetConnect implements IAuthConnect {
   AuthConnect._internal();
 
   Future<bool> checkToken({required String token}) async {
-    final res = await get(AuthEndpoint.login, query: {'token': token});
+    final res = await get(AuthEndpoint.login.second, query: {'token': token});
     if (res.status.hasError) {
       return false;
     }
@@ -24,7 +24,7 @@ class AuthConnect extends GetConnect implements IAuthConnect {
 
   @override
   Future<String> login({required String email, required String password}) async {
-    final res = await post(AuthEndpoint.login, {'email': email, 'password': password});
+    final res = await post(AuthEndpoint.login.second, {'email': email, 'password': password});
     if (res.status.hasError) {
       throw Exception(res.statusText.toString());
     }
@@ -36,6 +36,6 @@ class AuthConnect extends GetConnect implements IAuthConnect {
 
   @override
   Future<void> logout() async {
-    await delete(AuthEndpoint.logout);
+    await delete(AuthEndpoint.logout.second);
   }
 }

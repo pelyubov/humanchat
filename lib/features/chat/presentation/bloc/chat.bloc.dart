@@ -25,9 +25,15 @@ class ChatBloc extends GetxController {
     channels.value = Cache().channels.values.toList();
   }
 
-  void getMessage({required ChannelId currentChannelId}) {
-    messages.value[currentChannelId] =
-        Cache().messages.values.where((message) => message.channel == currentChannelId).toList();
+  List<Message> getMessage({required ChannelId currentChannelId}) {
+    messages.value[currentChannelId] = Cache()
+        .messages
+        .values
+        .where(
+          (message) => message.channel == currentChannelId,
+        )
+        .toList();
+    return messages.value[currentChannelId]!;
   }
 
   handleMessage(MessageEventData data) {

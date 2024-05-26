@@ -6,7 +6,7 @@ import 'package:humanchat/core/api.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketService extends GetxService {
-  final _websocketUrl = Uri.parse(APIEndpoint.websocketPath);
+  final _websocketUrl = Uri.parse(Endpoint.wsEndpoint);
   late final WebSocketChannel channel;
   var eventHandlers = <String, Function>{}.obs;
 

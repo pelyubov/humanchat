@@ -1,59 +1,61 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:humanchat/utils/types.dart';
+// ignore_for_file: constant_identifier_names
 
-class APIEndpoint {
-  static final String serverPath = dotenv.get('URL');
-  static final String websocketPath = dotenv.get('WEBSOCKET_URL');
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:humanchat/utils/pair.dart';
+
+enum HttpMethods {
+  GET,
+  POST,
+  PUT,
+  PATCH,
+  DELETE,
+}
+
+class Endpoint {
+  static final String apiEndpoint = dotenv.get('URL');
+  static final String wsEndpoint = dotenv.get('WEBSOCKET_URL');
 }
 
 class AuthEndpoint {
-  static final String _auth = '${APIEndpoint.serverPath}/api';
-  static final String login = '$_auth/login';
-  static final String logout = '$_auth/logout';
-  // static final String forgotPassword = '$_auth/forgot-password';
-  // static final String checkPinCode = '$_auth/check-pin-code';
+  static final login = Pair(HttpMethods.POST, '${Endpoint.apiEndpoint}/login');
+  static final logout = Pair(HttpMethods.POST, '${Endpoint.apiEndpoint}/logout');
+  static final signUp = Pair(HttpMethods.POST, '${Endpoint.apiEndpoint}/register');
 }
 
-/// [update]: HTTP Patch
 class UserEndpoint {
-  static final String signUp = '${APIEndpoint.serverPath}/signup';
-  static final String _user = '${APIEndpoint.serverPath}/@me';
-  static final String updateUser = _user;
-  static final String deleteUser = _user;
-  static final String getSelfInfo = _user;
-
-  static final String sendRequest = '$_user/requests/new';
-  static String acceptRequest({required String id}) => '$_user/request/$id/accept';
-
-  static String deleteRelation({required String id}) => '$_user/request/$id/reject';
-  static String getFriendsRequests = '$_user/requests/outgoing';
-  static String getIncomingRequests = '$_user/requests/incoming';
+  static final baseUrl = '${Endpoint.apiEndpoint}/@me';
+  static final update = Pair(HttpMethods.PATCH, baseUrl);
+  static final delete = Pair(HttpMethods.DELETE, baseUrl);
+  static final info = Pair(HttpMethods.GET, baseUrl);
+  static final requests = Pair(HttpMethods.GET, '$baseUrl/requests');
+  static final sendRequest = Pair(HttpMethods.POST, '${UserEndpoint.requests}/new');
+  static acceptRequest({required BigInt userId}) =>
+      Pair(HttpMethods.PUT, '${UserEndpoint.requests}/$userId/accept');
+  static rejectRequest({required BigInt userId}) =>
+      Pair(HttpMethods.DELETE, '${UserEndpoint.requests}/$userId/reject');
+  static final getFriendsRequests = Pair(HttpMethods.GET, '${UserEndpoint.requests}/outgoing');
+  static final getIncomingRequests = Pair(HttpMethods.GET, '${UserEndpoint.requests}/incoming');
 }
 
 class ChatEndpoint {
-  static String sendMessage({required ChannelId channelId}) =>
-      '${APIEndpoint.serverPath}/api/channels/$channelId/messages';
-  // static String channel({required ChannelId channelId}) =>
+  static final baseUrl = '${Endpoint.apiEndpoint}/channels';
+  static final getChannels = Pair(HttpMethods.GET, baseUrl);
+  static final createChannel = Pair(HttpMethods.POST, '$baseUrl/create');
+  static channelInfo({required BigInt channelId}) => Pair(HttpMethods.GET, '$baseUrl/$channelId');
+  static editChannel({required BigInt channelId}) =>
+      Pair(HttpMethods.PATCH, '$baseUrl/$channelId/edit');
+  static deleteChannel({required BigInt channelId}) =>
+      Pair(HttpMethods.DELETE, '$baseUrl/$channelId/delete');
+  static joinChannelByInvite({required String invite}) =>
+      Pair(HttpMethods.POST, '$baseUrl/join/$invite');
+  static createInvite({required BigInt channelId}) =>
+      Pair(HttpMethods.POST, '$baseUrl/$channelId/invite');
+  static leaveChannel({required BigInt channelId}) =>
+      Pair(HttpMethods.DELETE, '$baseUrl/$channelId/leave');
+  static sendMessage({required BigInt channelId}) =>
+      Pair(HttpMethods.POST, '$baseUrl/$channelId/messages');
+  static editMessage({required BigInt channelId, required BigInt messageId}) =>
+      Pair(HttpMethods.PATCH, '$baseUrl/$channelId/messages/$messageId');
+  static deleteMessage({required BigInt channelId, required BigInt messageId}) =>
+      Pair(HttpMethods.DELETE, '$baseUrl/$channelId/messages/$messageId');
 }
-
-// class ChannelEndpoint {
-//   static final String _channel = '${APIEndpoint.serverPath}/channel';
-//   static String getChannel(String channelId) =>
-//       Uri.http(_channel, '/channel/get', {'channelId': channelId}).toString();
-
-//   static String getAllChannels(String userId) =>
-//       Uri.http(_channel, '/channel/get-all', {'userId': userId}).toString();
-
-//   static String createChannel(String userId) =>
-//       Uri.http(_channel, '/channel/create', {'userId': userId}).toString();
-
-//   static String deleteChannel(String userId, String channelId) =>
-//       Uri.http(_channel, '/channel/delete', {'userId': userId, 'channelId': channelId}).toString();
-
-//   static String updateChannel(String channelId) =>
-//       Uri.http(_channel, '/channel/update', {'channelId': channelId}).toString();
-
-//   static String get addMembers => '$_channel/channel/add-members';
-
-//   static String removeMembers(String channelId) => '$_channel/channel/$channelId/remove-members';
-// }
